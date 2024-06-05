@@ -1,10 +1,11 @@
-import { Book } from "../db/books";
+import { InferResultType } from "../db/types";
 
-type ListOfBooksProps = {
-  books: Array<Book>;
-};
+type BookWithAuthors = InferResultType<
+  "books",
+  { booksToAuthors: { with: { author: true } } }
+>[];
 
-export function ListOfBooks({ books }: ListOfBooksProps) {
+export function ListOfBooks({ books }: { books: BookWithAuthors }) {
   return (
     <ul id="list-books">
       {books.map((book) => (
@@ -18,7 +19,7 @@ export function ListOfBooks({ books }: ListOfBooksProps) {
               />
             ) : null}
             <div class="author flex gap-x-2 mt-4">
-              {book.authors.map((author) => {
+              {book.booksToAuthors.map(({ author }) => {
                 return <a href={`/authors/${author.id}`}>{author.name}</a>;
               })}
               <br />
